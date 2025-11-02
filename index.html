@@ -1,115 +1,119 @@
-<!DOCTYPE html><!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ben's 3D Prints Shop</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ben's 3D Prints</title>
   <style>
-    :root{--bg:#070812;--card:#0f1720;--accent:#1e90ff;--muted:#9aa6b2;color-scheme: dark}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:linear-gradient(180deg,#05050a 0%, #081027 100%);color:#e6eef6}
-    header{padding:28px 20px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;gap:16px}
-    .brand{display:flex;flex-direction:column}
-    .brand h1{margin:0;font-size:20px;letter-spacing:0.4px}
-    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
-    .container{max-width:1100px;margin:28px auto;padding:0 20px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:12px;transition:transform .18s ease,box-shadow .18s ease}
-    .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
-    .thumb{width:100%;height:180px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(90deg,#0b1220,#081827)}
-    .meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
-    .meta .title{font-weight:600}
-    .meta .price{color:var(--accent);font-weight:700}
-    .actions{display:flex;gap:8px;margin-top:12px}
-    .btn{flex:1;padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-    .btn.order{background:linear-gradient(90deg,var(--accent),#3aa0ff);color:#021028}
-    .btn.view{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-    footer{padding:18px 20px;color:var(--muted);text-align:center}
-    .empty{padding:60px;border:1px dashed rgba(255,255,255,0.04);border-radius:12px;text-align:center;color:var(--muted)}
-    @media (max-width:480px){.thumb{height:140px}}
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+    }
+
+    header {
+      background-color: #111827;
+      color: #60a5fa;
+      text-align: center;
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      border-bottom: 2px solid #1f2937;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background-color: #1f2937;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card h3 {
+      color: #60a5fa;
+      margin: 15px 0 5px;
+    }
+
+    .card p {
+      font-size: 0.9em;
+      color: #cbd5e1;
+      padding: 0 15px;
+      margin-bottom: 15px;
+    }
+
+    .order-btn {
+      display: inline-block;
+      background-color: #3b82f6;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+
+    .order-btn:hover {
+      background-color: #2563eb;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #111827;
+      color: #9ca3af;
+      font-size: 0.9em;
+      border-top: 2px solid #1f2937;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--accent),#0055ff);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#021028">3D</div>
-    <div class="brand">
-      <h1>Ben's 3D Prints</h1>
-      <p>Browse — click a product to order via Google Form</p>
+  <header>Ben's 3D Prints</header>
+
+  <div class="container">
+    <!-- Product 1 -->
+    <div class="card">
+      <img src="images/dragon.jpg" alt="Dragon Print" />
+      <h3>Dragon Statue</h3>
+      <p>A fierce 3D printed dragon model with detailed wings and scales.</p>
+      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
     </div>
-  </header>
 
-  <main class="container">
-    <section id="gallery">
-      <div id="grid" class="grid"></div>
-      <div id="empty" class="empty" style="display:none">No prints available yet. Add images to the <code>/images</code> folder and update <code>products</code> in the script.</div>
-    </section>
-  </main>
+    <!-- Product 2 -->
+    <div class="card">
+      <img src="images/vase.jpg" alt="Vase Print" />
+      <h3>Modern Vase</h3>
+      <p>Sleek geometric vase perfect for flowers or decor pieces.</p>
+      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
+    </div>
 
-  <footer>
-    Hosted on GitHub Pages — Replace the image links below with your repository’s image URLs.
-  </footer>
+    <!-- Product 3 -->
+    <div class="card">
+      <img src="images/car.jpg" alt="Car Model" />
+      <h3>Classic Car</h3>
+      <p>A miniature 3D printed collectible car with realistic details.</p>
+      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
+    </div>
+  </div>
 
-  <script>
-    // Set your Google Form link here
-    const formBaseUrl = 'https://forms.gle/z3j2riizYjUqCsF39';
-
-    // --- PRODUCTS --- (Update these with your GitHub image links)
-    const githubUsername = 'MrMickem1'; // replace with your GitHub username
-    const repoName = '3dprints'; // replace with your repository name
-    const imageBaseUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/images/`;
-
-    const products = [
-      {id: 'p1', name: 'Low-Poly Dragon', price: '$12', image: imageBaseUrl + 'dragon.jpg'},
-      {id: 'p2', name: 'Phone Stand (Adjustable)', price: '$8', image: imageBaseUrl + 'phone-stand.jpg'},
-      {id: 'p3', name: 'Custom Keycap - Honeycomb', price: '$6', image: imageBaseUrl + 'keycap.jpg'}
-    ];
-
-    const grid = document.getElementById('grid');
-    const empty = document.getElementById('empty');
-
-    if (products.length === 0) {
-      empty.style.display = 'block';
-    } else {
-      empty.style.display = 'none';
-      products.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const img = document.createElement('img');
-        img.className = 'thumb';
-        img.alt = p.name;
-        img.src = p.image;
-        img.onerror = function(){ this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="%23081227"/><text x="50%" y="50%" dy="6" fill="%239aa6b2" font-size="20" text-anchor="middle">Image missing</text></svg>' }
-
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        meta.innerHTML = `<div class="title">${p.name}</div><div class="price">${p.price || ''}</div>`;
-
-        const actions = document.createElement('div');
-        actions.className = 'actions';
-
-        const orderBtn = document.createElement('button');
-        orderBtn.className = 'btn order';
-        orderBtn.textContent = 'Order';
-        orderBtn.onclick = () => window.open(formBaseUrl, '_blank');
-
-        const viewBtn = document.createElement('button');
-        viewBtn.className = 'btn view';
-        viewBtn.textContent = 'View';
-        viewBtn.onclick = () => window.open(p.image, '_blank');
-
-        actions.appendChild(orderBtn);
-        actions.appendChild(viewBtn);
-
-        card.appendChild(img);
-        card.appendChild(meta);
-        card.appendChild(actions);
-
-        grid.appendChild(card);
-      });
-    }
-  </script>
+  <footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
 </body>
 </html>
-
-
