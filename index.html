@@ -39,9 +39,7 @@ header {
   position: relative;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-}
+.card:hover { transform: translateY(-5px); }
 
 .slideshow-container {
   position: relative;
@@ -57,9 +55,7 @@ header {
   display: none;
 }
 
-.slideshow-container img.active {
-  display: block;
-}
+.slideshow-container img.active { display: block; }
 
 .arrow {
   position: absolute;
@@ -101,12 +97,50 @@ footer {
   font-size: 0.9em;
   border-top: 2px solid #1f2937;
 }
+
+/* Secret game menu styles */
+#game-menu {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  background-color: #1f2937;
+  color: #e6edf3;
+  border: 2px solid #60a5fa;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+#game-menu h3 {
+  margin-top: 0;
+  color: #60a5fa;
+  text-align: center;
+}
+
+#game-menu a {
+  display: block;
+  color: #3b82f6;
+  text-decoration: none;
+  margin: 5px 0;
+}
+
+#game-menu a:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
 <header>Ben's 3D Prints</header>
 
 <div class="container" id="product-grid"></div>
+
+<!-- Secret game menu -->
+<div id="game-menu">
+  <h3>Secret Games</h3>
+  <div id="game-links"></div>
+</div>
 
 <footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
 
@@ -116,7 +150,7 @@ const githubUsername = "MrMickem1";
 const repoName = "MrMickem1.github.io";
 const imageFolder = "images";
 
-// Each product can have multiple images in an array
+// Product list
 const products = [
   {
     name: "Dragon Statue",
@@ -201,8 +235,47 @@ products.forEach((p, index) => {
 
   grid.appendChild(card);
 });
+
+// --- Secret game menu ---
+const secretCode = "southadams";
+let typed = "";
+
+const gameMenu = document.getElementById("game-menu");
+const gameLinksDiv = document.getElementById("game-links");
+
+// Fetch game files automatically from GitHub repo /games folder
+const gamesFolder = "games";
+fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
+  .then(res => res.json())
+  .then(files => {
+    files.forEach(file => {
+      if (file.name.endsWith(".html")) {
+        const a = document.createElement("a");
+        a.href = file.download_url; // raw link to HTML file
+        a.target = "_blank";
+        a.textContent = file.name.replace(".html", "");
+        gameLinksDiv.appendChild(a);
+      }
+    });
+  })
+  .catch(err => {
+    console.error("Failed to load game files:", err);
+    const msg = document.createElement("p");
+    msg.textContent = "No games found or error fetching files.";
+    gameLinksDiv.appendChild(msg);
+  });
+
+// Detect secret code
+document.addEventListener("keydown", (e) => {
+  typed += e.key.toLowerCase();
+  if (!secretCode.startsWith(typed)) {
+    typed = "";
+  }
+  if (typed === secretCode) {
+    gameMenu.style.display = "block";
+    typed = "";
+  }
+});
 </script>
 </body>
 </html>
-
-
