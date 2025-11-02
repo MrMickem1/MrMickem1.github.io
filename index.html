@@ -39,7 +39,9 @@ header {
   position: relative;
 }
 
-.card:hover { transform: translateY(-5px); }
+.card:hover {
+  transform: translateY(-5px);
+}
 
 .slideshow-container {
   position: relative;
@@ -55,7 +57,9 @@ header {
   display: none;
 }
 
-.slideshow-container img.active { display: block; }
+.slideshow-container img.active {
+  display: block;
+}
 
 .arrow {
   position: absolute;
@@ -98,37 +102,29 @@ footer {
   border-top: 2px solid #1f2937;
 }
 
-/* Secret game menu styles */
+/* Game menu styles */
 #game-menu {
-  position: fixed;
-  top: 50px;
-  right: 50px;
-  background-color: #1f2937;
-  color: #e6edf3;
-  border: 2px solid #60a5fa;
-  padding: 20px;
-  border-radius: 10px;
   display: none;
-  z-index: 1000;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #111827;
+  padding: 20px;
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
   max-width: 300px;
+  z-index: 9999;
 }
-
-#game-menu h3 {
-  margin-top: 0;
-  color: #60a5fa;
-  text-align: center;
-}
-
+#game-menu h2 { color: #60a5fa; margin-top: 0; text-align: center; }
 #game-menu a {
   display: block;
   color: #3b82f6;
   text-decoration: none;
   margin: 5px 0;
+  text-align: center;
 }
-
-#game-menu a:hover {
-  text-decoration: underline;
-}
+#game-menu a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -136,9 +132,9 @@ footer {
 
 <div class="container" id="product-grid"></div>
 
-<!-- Secret game menu -->
+<!-- Secret Game Menu -->
 <div id="game-menu">
-  <h3>Secret Games</h3>
+  <h2>Secret Games</h2>
   <div id="game-links"></div>
 </div>
 
@@ -149,56 +145,40 @@ const formLink = "https://forms.gle/z3j2riizYjUqCsF39";
 const githubUsername = "MrMickem1";
 const repoName = "MrMickem1.github.io";
 const imageFolder = "images";
+const gamesFolder = "games";
 
-// Product list
+// Products with multiple images
 const products = [
-  {
-    name: "Dragon Statue",
-    desc: "A fierce 3D printed dragon model with detailed wings and scales.",
-    images: ["dragon1.jpg", "keycap.jpg", "phone-stand.jpg"]
-  },
-  {
-    name: "Modern Vase",
-    desc: "Sleek geometric vase perfect for flowers or decor pieces.",
-    images: ["vase1.jpg", "vase2.jpg"]
-  },
-  {
-    name: "Classic Car",
-    desc: "A miniature 3D printed collectible car with realistic details.",
-    images: ["car1.jpg", "car2.jpg"]
-  },
-  {
-    name: "Classic Car 2",
-    desc: "Another collectible car with realistic details.",
-    images: ["car3.jpg", "car4.jpg"]
-  }
+  {name: "Dragon Statue", desc: "A fierce 3D printed dragon model with detailed wings and scales.", images: ["dragon1.jpg","dragon2.jpg"]},
+  {name: "Modern Vase", desc: "Sleek geometric vase perfect for flowers or decor pieces.", images: ["vase1.jpg","vase2.jpg"]},
+  {name: "Classic Car", desc: "A miniature 3D printed collectible car with realistic details.", images: ["car1.jpg","car2.jpg"]},
+  {name: "Classic Car 2", desc: "Another collectible car with realistic details.", images: ["car3.jpg","car4.jpg"]}
 ];
 
 const grid = document.getElementById("product-grid");
 
-products.forEach((p, index) => {
+// Render products
+products.forEach((p) => {
   const card = document.createElement("div");
   card.className = "card";
 
-  // Slideshow container
+  // Slideshow
   const slideshow = document.createElement("div");
   slideshow.className = "slideshow-container";
 
-  p.images.forEach((img, i) => {
+  p.images.forEach((img,i) => {
     const imageEl = document.createElement("img");
     imageEl.src = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/${imageFolder}/${img}`;
-    imageEl.className = i === 0 ? "active" : "";
+    if(i===0) imageEl.classList.add("active");
     slideshow.appendChild(imageEl);
   });
 
-  // Arrows
   const leftArrow = document.createElement("div");
   leftArrow.className = "arrow left";
   leftArrow.innerHTML = "&#10094;";
   const rightArrow = document.createElement("div");
   rightArrow.className = "arrow right";
   rightArrow.innerHTML = "&#10095;";
-
   slideshow.appendChild(leftArrow);
   slideshow.appendChild(rightArrow);
 
@@ -206,13 +186,13 @@ products.forEach((p, index) => {
   leftArrow.onclick = () => {
     const imgs = slideshow.querySelectorAll("img");
     imgs[current].classList.remove("active");
-    current = (current - 1 + imgs.length) % imgs.length;
+    current = (current-1+imgs.length)%imgs.length;
     imgs[current].classList.add("active");
   };
   rightArrow.onclick = () => {
     const imgs = slideshow.querySelectorAll("img");
     imgs[current].classList.remove("active");
-    current = (current + 1) % imgs.length;
+    current = (current+1)%imgs.length;
     imgs[current].classList.add("active");
   };
 
@@ -236,46 +216,41 @@ products.forEach((p, index) => {
   grid.appendChild(card);
 });
 
-// --- Secret game menu ---
-const secretCode = "southadams";
+// Secret Game Menu Logic
 let typed = "";
-
+const secret = "southadams";
 const gameMenu = document.getElementById("game-menu");
 const gameLinksDiv = document.getElementById("game-links");
 
-// Fetch game files automatically from GitHub repo /games folder
-const gamesFolder = "games";
-fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
+document.addEventListener("keydown", (e)=>{
+  typed += e.key.toLowerCase();
+  if(!secret.startsWith(typed)) typed = "";
+  if(typed === secret){
+    typed = "";
+    gameMenu.style.display = gameMenu.style.display === "block" ? "none" : "block";
+    loadGames();
+  }
+});
+
+function loadGames(){
+  // GitHub API to list files in /games folder
+  fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
   .then(res => res.json())
   .then(files => {
+    gameLinksDiv.innerHTML = "";
     files.forEach(file => {
-      if (file.name.endsWith(".html")) {
+      if(file.name.endsWith(".html")){
         const a = document.createElement("a");
-        a.href = file.download_url; // raw link to HTML file
+        // Use GitHub Pages URL to render HTML correctly
+        a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}`;
         a.target = "_blank";
-        a.textContent = file.name.replace(".html", "");
+        a.textContent = file.name.replace(".html","");
         gameLinksDiv.appendChild(a);
       }
     });
   })
-  .catch(err => {
-    console.error("Failed to load game files:", err);
-    const msg = document.createElement("p");
-    msg.textContent = "No games found or error fetching files.";
-    gameLinksDiv.appendChild(msg);
-  });
-
-// Detect secret code
-document.addEventListener("keydown", (e) => {
-  typed += e.key.toLowerCase();
-  if (!secretCode.startsWith(typed)) {
-    typed = "";
-  }
-  if (typed === secretCode) {
-    gameMenu.style.display = "block";
-    typed = "";
-  }
-});
+  .catch(err => console.error(err));
+}
 </script>
 </body>
 </html>
