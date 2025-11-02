@@ -1,128 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ben's 3D Prints</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background-color: #0d1117;
-      color: #e6edf3;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ben's 3D Prints</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #0d1117;
+  color: #e6edf3;
+}
 
-    header {
-      background-color: #111827;
-      color: #60a5fa;
-      text-align: center;
-      padding: 20px;
-      font-size: 2em;
-      font-weight: bold;
-      border-bottom: 2px solid #1f2937;
-    }
+header {
+  background-color: #111827;
+  color: #60a5fa;
+  text-align: center;
+  padding: 20px;
+  font-size: 2em;
+  font-weight: bold;
+  border-bottom: 2px solid #1f2937;
+}
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 30px;
-    }
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
 
-    .card {
-      background-color: #1f2937;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-      overflow: hidden;
-      text-align: center;
-      transition: transform 0.2s ease;
-    }
+.card {
+  background-color: #1f2937;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.2s ease;
+  position: relative;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+.card:hover {
+  transform: translateY(-5px);
+}
 
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
 
-    .card h3 {
-      color: #60a5fa;
-      margin: 15px 0 5px;
-    }
+.slideshow-container img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: none;
+}
 
-    .card p {
-      font-size: 0.9em;
-      color: #cbd5e1;
-      padding: 0 15px;
-      margin-bottom: 15px;
-    }
+.slideshow-container img.active {
+  display: block;
+}
 
-    .order-btn {
-      display: inline-block;
-      background-color: #3b82f6;
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      transition: background 0.2s;
-    }
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2em;
+  color: #3b82f6;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  padding: 5px 10px;
+  cursor: pointer;
+  user-select: none;
+}
 
-    .order-btn:hover {
-      background-color: #2563eb;
-    }
+.arrow.left { left: 10px; }
+.arrow.right { right: 10px; }
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      background-color: #111827;
-      color: #9ca3af;
-      font-size: 0.9em;
-      border-top: 2px solid #1f2937;
-    }
-  </style>
+.card h3 { color: #60a5fa; margin: 15px 0 5px; }
+.card p { font-size: 0.9em; color: #cbd5e1; padding: 0 15px; margin-bottom: 15px; }
+
+.order-btn {
+  display: inline-block;
+  background-color: #3b82f6;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.order-btn:hover { background-color: #2563eb; }
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #111827;
+  color: #9ca3af;
+  font-size: 0.9em;
+  border-top: 2px solid #1f2937;
+}
+</style>
 </head>
 <body>
-  <header>Ben's 3D Prints</header>
+<header>Ben's 3D Prints</header>
 
-  <div class="container">
-    <!-- Product 1 -->
-    <div class="card">
-      <img src="images/dragon.jpg" alt="Dragon Print" />
-      <h3>Dragon Statue</h3>
-      <p>A fierce 3D printed dragon model with detailed wings and scales.</p>
-      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
-    </div>
+<div class="container" id="product-grid"></div>
 
-    <!-- Product 2 -->
-    <div class="card">
-      <img src="images/dragon.jpg" alt="Vase Print" />
-      <h3>Modern Vase</h3>
-      <p>Sleek geometric vase perfect for flowers or decor pieces.</p>
-      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
-    </div>
+<footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
 
-    <!-- Product 3 -->
-    <div class="card">
-      <img src="images/dragon.jpg" alt="Car Model" />
-      <h3>Classic Car</h3>
-      <p>A miniature 3D printed collectible car with realistic details.</p>
-      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
-    </div>
+<script>
+const formLink = "https://forms.gle/z3j2riizYjUqCsF39";
+const githubUsername = "MrMickem1";
+const repoName = "MrMickem1.github.io";
+const imageFolder = "images";
 
-    <!-- Product 4 -->
-    <div class="card">
-      <img src="images/dragon.jpg" alt="Car Model 2" />
-      <h3>Classic Car 2</h3>
-      <p>A miniature 3D printed collectible car with realistic details 6-7.</p>
-      <a href="https://forms.gle/z3j2riizYjUqCsF39" target="_blank" class="order-btn">Order Now</a>
-    </div>
-  </div>
+// Each product can have multiple images in an array
+const products = [
+  {
+    name: "Dragon Statue",
+    desc: "A fierce 3D printed dragon model with detailed wings and scales.",
+    images: ["dragon1.jpg", "dragon2.jpg", "dragon3.jpg"]
+  },
+  {
+    name: "Modern Vase",
+    desc: "Sleek geometric vase perfect for flowers or decor pieces.",
+    images: ["vase1.jpg", "vase2.jpg"]
+  },
+  {
+    name: "Classic Car",
+    desc: "A miniature 3D printed collectible car with realistic details.",
+    images: ["car1.jpg", "car2.jpg"]
+  },
+  {
+    name: "Classic Car 2",
+    desc: "Another collectible car with realistic details.",
+    images: ["car3.jpg", "car4.jpg"]
+  }
+];
 
-  <footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
+const grid = document.getElementById("product-grid");
+
+products.forEach((p, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  // Slideshow container
+  const slideshow = document.createElement("div");
+  slideshow.className = "slideshow-container";
+
+  p.images.forEach((img, i) => {
+    const imageEl = document.createElement("img");
+    imageEl.src = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/${imageFolder}/${img}`;
+    imageEl.className = i === 0 ? "active" : "";
+    slideshow.appendChild(imageEl);
+  });
+
+  // Arrows
+  const leftArrow = document.createElement("div");
+  leftArrow.className = "arrow left";
+  leftArrow.innerHTML = "&#10094;";
+  const rightArrow = document.createElement("div");
+  rightArrow.className = "arrow right";
+  rightArrow.innerHTML = "&#10095;";
+
+  slideshow.appendChild(leftArrow);
+  slideshow.appendChild(rightArrow);
+
+  let current = 0;
+  leftArrow.onclick = () => {
+    const imgs = slideshow.querySelectorAll("img");
+    imgs[current].classList.remove("active");
+    current = (current - 1 + imgs.length) % imgs.length;
+    imgs[current].classList.add("active");
+  };
+  rightArrow.onclick = () => {
+    const imgs = slideshow.querySelectorAll("img");
+    imgs[current].classList.remove("active");
+    current = (current + 1) % imgs.length;
+    imgs[current].classList.add("active");
+  };
+
+  card.appendChild(slideshow);
+
+  const title = document.createElement("h3");
+  title.textContent = p.name;
+  card.appendChild(title);
+
+  const desc = document.createElement("p");
+  desc.textContent = p.desc;
+  card.appendChild(desc);
+
+  const btn = document.createElement("a");
+  btn.href = formLink;
+  btn.target = "_blank";
+  btn.className = "order-btn";
+  btn.textContent = "Order Now";
+  card.appendChild(btn);
+
+  grid.appendChild(card);
+});
+</script>
 </body>
 </html>
-
