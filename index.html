@@ -233,18 +233,25 @@ document.addEventListener("keydown", (e)=>{
 });
 
 function loadGames(){
-  // GitHub API to list files in /games folder
   fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
   .then(res => res.json())
   .then(files => {
     gameLinksDiv.innerHTML = "";
     files.forEach(file => {
-      if(file.name.endsWith(".html")){
-        const a = document.createElement("a");
-        // Use GitHub Pages URL to render HTML correctly
+      let a = document.createElement("a");
+
+      if (file.type === "file" && file.name.endsWith(".html")) {
+        // Normal .html file
         a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}`;
+        a.textContent = file.name.replace(".html", "");
+      } else if (file.type === "dir") {
+        // Folder (will load its index.html automatically)
+        a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}/`;
+        a.textContent = file.name;
+      }
+
+      if (a.href) {
         a.target = "_blank";
-        a.textContent = file.name.replace(".html","");
         gameLinksDiv.appendChild(a);
       }
     });
