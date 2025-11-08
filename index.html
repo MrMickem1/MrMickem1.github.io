@@ -1,24 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ben</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      font-size: 5rem;
-      margin: 0;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ben's 3D Prints</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+
+header {
+  background-color: #111827;
+  color: #60a5fa;
+  text-align: center;
+  padding: 20px;
+  font-size: 2em;
+  font-weight: bold;
+  border-bottom: 2px solid #1f2937;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
+
+.card {
+  background-color: #1f2937;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.slideshow-container img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: none;
+}
+
+.slideshow-container img.active {
+  display: block;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2em;
+  color: #3b82f6;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  padding: 5px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.arrow.left { left: 10px; }
+.arrow.right { right: 10px; }
+
+.card h3 { color: #60a5fa; margin: 15px 0 5px; }
+.card p { font-size: 0.9em; color: #cbd5e1; padding: 0 15px; margin-bottom: 15px; }
+
+.order-btn {
+  display: inline-block;
+  background-color: #3b82f6;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.order-btn:hover { background-color: #2563eb; }
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #111827;
+  color: #9ca3af;
+  font-size: 0.9em;
+  border-top: 2px solid #1f2937;
+}
+
+/* Game menu styles */
+#game-menu {
+  display: none;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #111827;
+  padding: 20px;
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
+  max-width: 300px;
+  z-index: 9999;
+}
+#game-menu h2 { color: #60a5fa; margin-top: 0; text-align: center; }
+#game-menu a {
+  display: block;
+  color: #3b82f6;
+  text-decoration: none;
+  margin: 5px 0;
+  text-align: center;
+}
+#game-menu a:hover { text-decoration: underline; }
+</style>
 </head>
 <body>
-  Ben
+<header>Ben's 3D Prints</header>
+
+<div class="container" id="product-grid"></div>
+
+<!-- Secret Game Menu -->
+<div id="game-menu">
+  <h2>Secret Games</h2>
+  <div id="game-links"></div>
+</div>
+
+<footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
+
+<script>
+const formLink = "https://forms.gle/z3j2riizYjUqCsF39";
+const githubUsername = "MrMickem1";
+const repoName = "MrMickem1.github.io";
+const imageFolder = "images";
+const gamesFolder = "games";
+
+// Products with multiple images
+const products = [
+  {name: "Dragon Statue", desc: "A fierce 3D printed dragon model with detailed wings and scales.", images: ["dragon1.jpg","dragon2.jpg"]},
+  {name: "Modern Vase", desc: "Sleek geometric vase perfect for flowers or decor pieces.", images: ["vase1.jpg","vase2.jpg"]},
+  {name: "Classic Car", desc: "A miniature 3D printed collectible car with realistic details.", images: ["car1.jpg","car2.jpg"]},
+  {name: "Classic Car 2", desc: "Another collectible car with realistic details.", images: ["car3.jpg","car4.jpg"]}
+];
+
+const grid = document.getElementById("product-grid");
+
+// Render products
+products.forEach((p) => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  // Slideshow
+  const slideshow = document.createElement("div");
+  slideshow.className = "slideshow-container";
+
+  p.images.forEach((img,i) => {
+    const imageEl = document.createElement("img");
+    imageEl.src = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/${imageFolder}/${img}`;
+    if(i===0) imageEl.classList.add("active");
+    slideshow.appendChild(imageEl);
+  });
+
+  const leftArrow = document.createElement("div");
+  leftArrow.className = "arrow left";
+  leftArrow.innerHTML = "&#10094;";
+  const rightArrow = document.createElement("div");
+  rightArrow.className = "arrow right";
+  rightArrow.innerHTML = "&#10095;";
+  slideshow.appendChild(leftArrow);
+  slideshow.appendChild(rightArrow);
+
+  let current = 0;
+  leftArrow.onclick = () => {
+    const imgs = slideshow.querySelectorAll("img");
+    imgs[current].classList.remove("active");
+    current = (current-1+imgs.length)%imgs.length;
+    imgs[current].classList.add("active");
+  };
+  rightArrow.onclick = () => {
+    const imgs = slideshow.querySelectorAll("img");
+    imgs[current].classList.remove("active");
+    current = (current+1)%imgs.length;
+    imgs[current].classList.add("active");
+  };
+
+  card.appendChild(slideshow);
+
+  const title = document.createElement("h3");
+  title.textContent = p.name;
+  card.appendChild(title);
+
+  const desc = document.createElement("p");
+  desc.textContent = p.desc;
+  card.appendChild(desc);
+
+  const btn = document.createElement("a");
+  btn.href = formLink;
+  btn.target = "_blank";
+  btn.className = "order-btn";
+  btn.textContent = "Order Now";
+  card.appendChild(btn);
+
+  grid.appendChild(card);
+});
+
+// Secret Game Menu Logic
+let typed = "";
+const secret = "southadams";
+const gameMenu = document.getElementById("game-menu");
+const gameLinksDiv = document.getElementById("game-links");
+
+document.addEventListener("keydown", (e)=>{
+  typed += e.key.toLowerCase();
+  if(!secret.startsWith(typed)) typed = "";
+  if(typed === secret){
+    typed = "";
+    gameMenu.style.display = gameMenu.style.display === "block" ? "none" : "block";
+    loadGames();
+  }
+});
+
+function loadGames(){
+  // GitHub API to list files in /games folder
+  fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
+  .then(res => res.json())
+  .then(files => {
+    gameLinksDiv.innerHTML = "";
+    files.forEach(file => {
+      if(file.name.endsWith(".html")){
+        const a = document.createElement("a");
+        // Use GitHub Pages URL to render HTML correctly
+        a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}`;
+        a.target = "_blank";
+        a.textContent = file.name.replace(".html","");
+        gameLinksDiv.appendChild(a);
+      }
+    });
+  })
+  .catch(err => console.error(err));
+}
+</script>
 </body>
 </html>
