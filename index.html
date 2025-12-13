@@ -1,263 +1,907 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ben's 3D Prints</title>
-<style>
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background-color: #0d1117;
-  color: #e6edf3;
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>U.S. Constitution</title>
+  <style>
+    :root{
+      --bg:#070709;
+      --panel:#0f1215;
+      --muted:#9aa4b2;
+      --accent:#47a7ff;
+      --card:#121418;
+      --card-2:#16181b;
+      --white:#eef6ff;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--muted);
+    }
+    a{color:inherit}
 
-header {
-  background-color: #111827;
-  color: #60a5fa;
-  text-align: center;
-  padding: 20px;
-  font-size: 2em;
-  font-weight: bold;
-  border-bottom: 2px solid #1f2937;
-}
+    #constitution{
+      max-width:980px;
+      margin:36px auto;
+      padding:28px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:10px;
+      box-shadow:0 6px 30px rgba(0,0,0,0.6);
+    }
+    #constitution h1{color:var(--white);text-align:center;margin-top:0}
+    #constitution h2{color:var(--white);margin-bottom:6px}
+    #constitution p{color:var(--muted);line-height:1.6;font-size:16px}
 
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 30px;
-}
+    .defined-word{text-decoration:underline dotted;cursor:help;border-bottom:1px dotted rgba(71,167,255,0.08);}
+    .defined-word:hover{color:var(--accent);text-decoration-color:rgba(71,167,255,0.3)}
 
-.card {
-  background-color: #1f2937;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  text-align: center;
-  transition: transform 0.2s ease;
-  position: relative;
-}
+    #secret-word{
+      color:var;
+      text-decoration:underline dotted;
+      cursor:pointer;
+      border-bottom:1px dotted rgba(71,167,255,0.08);
+    }
+    #secret-word:hover{color:var(--accent);text-decoration-color:rgba(71,167,255,0.3)}
 
-.card:hover {
-  transform: translateY(-5px);
-}
+    body.unlocked{
+      background-image:url('/images/wallpaper.jpg');
+      background-attachment:fixed;
+      background-size:cover;
+      background-position:center center;
+    }
 
-.slideshow-container {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-}
+    #gameMenu{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:linear-gradient(180deg,rgba(6,8,10,0.98),rgba(8,10,12,0.99));
+      z-index:999;
+      padding:28px 40px;
+      box-sizing:border-box;
+      overflow:auto;
+      color:var(--muted);
+    }
 
-.slideshow-container img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: none;
-}
+    .menu-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .menu-left{
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+    .brand{
+      color:var(--white);
+      font-weight:700;
+      font-size:18px;
+    }
+    .tabs{display:flex;gap:8px;align-items:center;}
+    .tab{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+    }
+    .tab[aria-selected="true"]{
+      background:linear-gradient(180deg,rgba(71,167,255,0.12),rgba(71,167,255,0.06));
+      color:var(--white);
+      border-color:rgba(71,167,255,0.18);
+      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    }
+    .menu-right{color:var(--muted);font-size:13px}
 
-.slideshow-container img.active {
-  display: block;
-}
+    .menu-content{display:block;margin-bottom:18px;}
+    .panel{
+      padding:12px 14px;
+      border-radius:8px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.00));
+      margin-bottom:12px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .panel .left{display:flex;flex-direction:column;gap:4px;}
+    .panel .title{color:var(--white);font-weight:700;font-size:14px;}
+    .panel .subtitle{font-size:13px;color:var(--muted);}
 
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2em;
-  color: #3b82f6;
-  background: rgba(0,0,0,0.5);
-  border-radius: 50%;
-  padding: 5px 10px;
-  cursor: pointer;
-  user-select: none;
-}
+    .bottom-area{margin-top:16px;}
 
-.arrow.left { left: 10px; }
-.arrow.right { right: 10px; }
+    .game-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:18px;
+      align-items:stretch;
+    }
+    .game-card{
+      background:linear-gradient(180deg,var(--card),var(--card-2));
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      cursor:pointer;
+      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+      transition:transform .16s ease,box-shadow .16s ease;
+      min-height:220px;
+      border:none;
+      text-align:left;
+    }
+    .game-card:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(0,0,0,0.6);}
 
-.card h3 { color: #60a5fa; margin: 15px 0 5px; }
-.card p { font-size: 0.9em; color: #cbd5e1; padding: 0 15px; margin-bottom: 15px; }
+    .game-thumb{flex:7 7 0%;width:100%;background:#0a0a0a;position:relative;overflow:hidden;min-height:120px;}
+    .game-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+    .game-meta{
+      flex:3 3 0%;
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(0deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+    }
+    .game-title{
+      color:var(--white);
+      font-weight:600;
+      font-size:14px;
+      text-align:center;
+      word-break:break-word;
+    }
 
-.order-btn {
-  display: inline-block;
-  background-color: #3b82f6;
-  color: white;
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  transition: background 0.2s;
-}
+    #gameFrame{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:#000;
+      z-index:1001;
+    }
+    #gameFrame #closeBtn{
+      position:absolute;
+      top:12px;
+      left:12px;
+      z-index:1002;
+      background:rgba(20,20,20,0.7);
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--white);
+      padding:8px 10px;
+      border-radius:6px;
+      cursor:pointer;
+      backdrop-filter:blur(4px);
+    }
+    #gameFrame iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      background:#000;
+    }
 
-.order-btn:hover { background-color: #2563eb; }
-
-footer {
-  text-align: center;
-  padding: 15px;
-  background-color: #111827;
-  color: #9ca3af;
-  font-size: 0.9em;
-  border-top: 2px solid #1f2937;
-}
-
-/* Game menu styles */
-#game-menu {
-  display: none;
-  position: fixed;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #111827;
-  padding: 20px;
-  border: 2px solid #3b82f6;
-  border-radius: 10px;
-  max-width: 300px;
-  z-index: 9999;
-}
-#game-menu h2 { color: #60a5fa; margin-top: 0; text-align: center; }
-#game-menu a {
-  display: block;
-  color: #3b82f6;
-  text-decoration: none;
-  margin: 5px 0;
-  text-align: center;
-}
-#game-menu a:hover { text-decoration: underline; }
-</style>
+    @media (max-width:900px){
+      #constitution{margin:18px;padding:18px}
+      .game-grid{gap:12px}
+      .menu-header{flex-direction:column;align-items:flex-start;gap:8px;}
+    }
+    @media (max-width:520px){
+      .game-card{min-height:180px}
+      .game-title{font-size:13px}
+    }
+  </style>
 </head>
 <body>
-<header>Ben's 3D Prints</header>
 
-<div class="container" id="product-grid"></div>
+  <main id="constitution" role="main">
+    <h1>The Constitution of the United States</h1>
 
-<!-- Secret Game Menu -->
-<div id="game-menu">
-  <h2>Secret Games</h2>
-  <div id="game-links"></div>
-</div>
+    <section aria-labelledby="preamble">
+      <h2 id="preamble">Preamble</h2>
+      <p>
+        We the People of the United States, in Order to form a more perfect 
+        <span class="defined-word" title="Union = the act of joining together into one group or nation">Union</span>, 
+        <span class="defined-word" title="establish = to set up or create something officially">establish</span> 
+        <span class="defined-word" title="Justice = fairness or the legal system ensuring fairness">Justice</span>,
+        insure <span class="defined-word" title="domestic = relating to one's own country">domestic</span> Tranquility, provide for the common
+        <span id="secret-word" title="the act of protecting against an attack, danger, or charge.">defence</span>, promote the general 
+        <span class="defined-word" title="Welfare = the health, happiness, and fortunes of a person or group">Welfare</span>,
+        and secure the Blessings of 
+        <span class="defined-word" title="Liberty = the state of being free within society">Liberty</span> to ourselves and our Posterity, do 
+        <span class="defined-word" title="ordain = to officially make something law or policy">ordain</span> and establish this
+        Constitution for the United States of America.
+      </p>
+    </section>
 
-<footer>© 2025 Ben’s 3D Prints — All Rights Reserved</footer>
+    <section aria-labelledby="article1">
+      <h2 id="article1">Article I (excerpt)</h2>
+      <p>
+        All <span class="defined-word" title="legislative = having the power to make laws">legislative</span> Powers herein granted shall be vested in a 
+        <span class="defined-word" title="Congress = the national legislative body of the United States">Congress</span> of the United States,
+        which shall consist of a <span class="defined-word" title="Senate = the upper chamber of Congress representing states">Senate</span> and 
+        <span class="defined-word" title="House of Representatives = the lower chamber of Congress representing citizens">House of Representatives</span>.
+      </p>
+    </section>
 
-<script>
-const formLink = "https://forms.gle/z3j2riizYjUqCsF39";
-const githubUsername = "MrMickem1";
-const repoName = "MrMickem1.github.io";
-const imageFolder = "images";
-const gamesFolder = "games";
+    <section aria-labelledby="article2">
+      <h2 id="article2">Article II (excerpt)</h2>
+      <p>
+        The <span class="defined-word" title="executive = having the power to enforce laws">executive</span> Power shall be vested in a 
+        <span class="defined-word" title="President = the elected head of the executive branch of the U.S. government">President</span> of the United States of America.
+      </p>
+    </section>
 
-// Products with multiple images
-const products = [
-  {name: "Dragon Statue", desc: "A fierce 3D printed dragon model with detailed wings and scales.", images: ["dragon1.jpg","dragon2.jpg"]},
-  {name: "Modern Vase", desc: "Sleek geometric vase perfect for flowers or decor pieces.", images: ["vase1.jpg","vase2.jpg"]},
-  {name: "Classic Car", desc: "A miniature 3D printed collectible car with realistic details.", images: ["car1.jpg","car2.jpg"]},
-  {name: "Classic Car 2", desc: "Another collectible car with realistic details.", images: ["car3.jpg","car4.jpg"]}
+    <section aria-labelledby="article3">
+      <h2 id="article3">Article III (excerpt)</h2>
+      <p>
+        The <span class="defined-word" title="judicial = relating to courts or the administration of justice">judicial</span> Power of the United States shall be vested in one 
+        <span class="defined-word" title="supreme Court = the highest federal court in the U.S.">supreme Court</span>, and in such
+        <span class="defined-word" title="inferior Courts = lower courts established by Congress under the Constitution">inferior Courts</span> as the Congress may from time to time 
+        <span class="defined-word" title="ordain = to officially make something law or policy">ordain</span> and 
+        <span class="defined-word" title="establish = to set up or create something officially">establish</span>.
+      </p>
+    </section>
+  </main>
+
+
+  <div id="gameMenu" aria-hidden="true">
+
+    <div class="menu-header">
+      <div class="menu-left">
+        <div class="brand">Secret Menu</div>
+        <div class="tabs" role="tablist" aria-label="Main tabs">
+          <button class="tab" role="tab" aria-selected="true" data-tab="games">Games</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="movies">Movies</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="extra">Extra</button>
+        </div>
+      </div>
+      <div class="menu-right">Press ESC to close game (when open)</div>
+    </div>
+
+    <div class="menu-content">
+
+      <div class="panel">
+        <div class="left">
+          <div class="title" id="panelTitle">Games</div>
+          <div class="subtitle" id="panelSubtitle">Click a card to open it</div>
+        </div>
+      </div>
+
+      <div id="gamesTab" data-tabcontent="games"></div>
+      <div id="moviesTab" data-tabcontent="movies" style="display:none;">
+        <div id="movieListContainer"></div>
+      </div>
+      <div id="extraTab" data-tabcontent="extra" style="display:none;">
+        <p style="color:var(--muted);margin:0;">Nothing here yet.</p>
+      </div>
+
+      <div class="bottom-area">
+        <div class="game-grid" id="gameGrid"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="gameFrame" aria-hidden="true">
+    <button id="closeBtn">Back</button>
+    <iframe id="gameIframe" src=""></iframe>
+  </div>
+
+
+  <script>
+    const SECRET_CODE = 'southadams';
+    const IMAGE_EXT = '.jpg';
+    const IMAGE_FOLDER = '/images/';
+    const GAME_HOST = 'https://usbillofrights.netlify.app';
+
+const gameList = [
+    "10minutestilldawn",
+    "100mg",
+    "1v1lol",
+    "1v1space",
+    "2020-game",
+    "2048",
+    "2048-multitask",
+    "9007199254740992",
+    "achievementunlocked",
+    "adanceoffireandice",
+    "adarkroom",
+    "adrenalinechallenge",
+    "adventuredrivers",
+    "age-of-war",
+    "align-4",
+    "alien-invaders-io",
+    "alienhominid",
+    "among-us",
+    "angry-birds",
+    "anti-terrorist-rush",
+    "arcade-wizard",
+    "asciispace",
+    "aspiring-artist",
+    "asteroids",
+    "astray",
+    "avalanche",
+    "awesome-tanks-2",
+    "backcountry",
+    "backflip-dive-3d",
+    "backrooms",
+    "badicecream",
+    "bad-ice-cream-3",
+    "badicecream2",
+    "baldis-basics",
+    "basketball-stars",
+    "basket-bros-io",
+    "basketrandom",
+    "basketball-io",
+    "basketball-Legends-2020",
+    "battleforgondor",
+    "bigredbutton",
+    "binding-of-isaac",
+    "bitlife",
+    "blackholesquare",
+    "blackknight",
+    "blocky-snakes",
+    "bloonstd",
+    "bloonstd2",
+    "bloxors",
+    "bounceback",
+    "boxel-rebound",
+    "boxhead2play",
+    "boxingrandom",
+    "brave-explorers",
+    "breakingthebank",
+    "breaklock",
+    "breakout",
+    "btd4",
+    "btts",
+    "burning-man-2",
+    "cannon-basketball-4",
+    "canyondefense",
+    "captaincallisto",
+    "cars-simulator",
+    "cell-machine",
+    "championarcher",
+    "chess",
+    "chill-radio",
+    "chromaincident",
+    "chromedino",
+    "circlo",
+    "city-blocks-2",
+    "clean-up-io",
+    "cluster-rush",
+    "color-switch-2-challenges",
+    "connect3",
+    "cookieclicker",
+    "core-ball",
+    "craftmine",
+    "crazycattle3d",
+    "creativekillchamber",
+    "crossroad",
+    "crowd-city-2",
+    "csgo-clicker",
+    "ctr",
+    "ctr-holiday",
+    "ctr-tr",
+    "cubefield",
+    "cupcake2048",
+    "dadish",
+    "dadish2",
+    "dadish3",
+    "dante",
+    "deal-or-no-deal",
+    "deathrun",
+    "death-run-3d",
+    "death-soul",
+    "defend-the-tank",
+    "dino",
+    "doctor-acorn2",
+    "dodge",
+    "dodge2048",
+    "dogeminer",
+    "doge-miner-2",
+    "doge-mining-simulator",
+    "dont-drop-the-white-ball-2",
+    "doodlejump",
+    "doublewires",
+    "douchebag-workout-2",
+    "dragon-vs-bricks",
+    "draw-the-hill",
+    "drive-mad",
+    "ducklife",
+    "ducklife-treasurehunt",
+    "ducklife1",
+    "ducklife2",
+    "ducklife3",
+    "ducklife4",
+    "duke-dashington-remastered",
+    "dungeon-craft",
+    "edgeofbound",
+    "edgesurf",
+    "elastic-face",
+    "emulator-js",
+    "endlesswar3",
+    "escapingtheprison",
+    "evolution",
+    "evilglitch",
+    "exo",
+    "fake-virus",
+    "fancyapantsadventures",
+    "factoryballs",
+    "factoryballsforever",
+    "fbwg",
+    "finns-fantastic-food-machine",
+    "fireboyandwatergirlintheforesttemple",
+    "firece",
+    "firewater",
+    "flappy-2048",
+    "flappybird",
+    "flappybird.old",
+    "flappy-defense",
+    "flashtetris",
+    "flippy-fish",
+    "flood-runner-2",
+    "fridaynightfunkin",
+    "friendlyfire",
+    "froggys-battle",
+    "fruitninja",
+    "frying-nemo",
+    "FullScreenMario",
+    "game-inside",
+    "generic-fishing-game",
+    "geodash",
+    "geodash-2",
+    "geometry-jump-sketchy",
+    "geometrydash",
+    "georgeandtheprinter",
+    "getaway-shootout",
+    "getting-over-it",
+    "gimme-the-airpod",
+    "glass-city",
+    "go-ball",
+    "golf",
+    "goodnight",
+    "google-snake",
+    "google-solitaire",
+    "gopher",
+    "gopherkart",
+    "gravity-soccer",
+    "green",
+    "greybox",
+    "grindcraft",
+    "grow-in-the-hole",
+    "gun-mayhem",
+    "gun-mayhem-2",
+    "gun-mayhem-redux",
+    "gunspin",
+    "hackertype",
+    "happy-hop",
+    "happy-wheels",
+    "hba",
+    "helicopter",
+    "hexgl",
+    "hextris",
+    "house-of-hazards",
+    "iceagebabyadventure",
+    "icys-purple-head",
+    "idle-breakout",
+    "idle-shark",
+    "impossiblyquiz",
+    "inquest",
+    "interactivebuddy",
+    "iscramble-io",
+    "jelly-truck",
+    "jetpack",
+    "jimothy-piggerton",
+    "jumpingfrogspuzzle",
+    "justfall",
+    "just-one-boss",
+    "kart-fight-io",
+    "kitchen-gun-game",
+    "kittencannon",
+    "klooki",
+    "konnekt",
+    "krunker",
+    "learnfofly",
+    "learntofly2",
+    "line-rider",
+    "madalin-stunt-cars-2",
+    "maketmeme",
+    "mario",
+    "marivnspectrum",
+    "matrixrampage",
+    "meat-boy",
+    "minecraft",
+    "minecraft0.30",
+    "minecraft1.13",
+    "minecraft1.5.2",
+    "minecraftbeta",
+    "minecraft-classic",
+    "minesweeper",
+    "miniputt",
+    "missiles",
+    "motox3m",
+    "motox3m2",
+    "motox3m-pool-party",
+    "motox3m-spooky",
+    "motox3mwinter",
+    "my-friend-pedro",
+    "n-gon",
+    "ninja",
+    "ninjasevilcorp",
+    "nr-shaft",
+    "OfflineParadise",
+    "om-bounce",
+    "one-screen-run",
+    "one-screen-run-2",
+    "osu",
+    "ovo",
+    "packabunchas",
+    "pacman",
+    "pacman-fps",
+    "pandemic2",
+    "papa-louie",
+    "papasburgeria",
+    "papas-burgeria",
+    "papas-doggeria",
+    "papas-pancakeria",
+    "papas-pizzeria",
+    "papas-sushiria",
+    "papas-wingeira",
+    "paperio2",
+    "papery-planes",
+    "particleclicker",
+    "pe-noire",
+    "pixiwip",
+    "pixel-cave",
+    "pizzeria-simulator",
+    "polybranch",
+    "popcat-classic",
+    "portalflash",
+    "precicion-client",
+    "protektor",
+    "pushback",
+    "push-the-square",
+    "push-your-luck",
+    "puzzle-ball",
+    "pvz-2",
+    "q1t3",
+    "racer",
+    "radiusraid",
+    "resources",
+    "retrobowl",
+    "retrohaunt",
+    "riddleschool",
+    "riddleschool2",
+    "riddleschool3",
+    "riddleschool4",
+    "riddleschool5",
+    "rise-of-neon-square",
+    "roadblocks",
+    "rocking-sky-trip",
+    "rolling-forests",
+    "rolly-vortex",
+    "rooftop-snipers",
+    "run3",
+    "sandboxels",
+    "sand-game",
+    "scrambled-eggs",
+    "scrapmetal",
+    "senya-and-oscar-2",
+    "shadow-world-adventure",
+    "shards",
+    "shift-flash",
+    "shift-flash-2",
+    "short-life-2",
+    "skyblock",
+    "sleepingbeauty",
+    "slice-of-sasha",
+    "slither-snake",
+    "slope",
+    "slope2",
+    "slope-ball",
+    "sm63",
+    "sm64",
+    "smashkarts",
+    "smokingbarrels",
+    "snake",
+    "snowbattle",
+    "snowrider3d",
+    "soccerrandom",
+    "solitaire",
+    "sort-the-court",
+    "spacecompany",
+    "spacegarden",
+    "spacehuggers",
+    "spaceinvaders",
+    "spelunky",
+    "squid-gun-fest",
+    "ssl",
+    "stack",
+    "stack-bump-3d",
+    "station-141",
+    "stealingthediamond",
+    "stick-archers-battle",
+    "stickclimb",
+    "stickman",
+    "stickman-boost",
+    "stickman-golf",
+    "Stickman-Survival",
+    "stickwar",
+    "stormthehouse2",
+    "subway-surfers",
+    "subway-surfers-bali",
+    "superhero-io",
+    "supermario",
+    "supermarioconstruct",
+    "super-mario-maker-online",
+    "super-puffer-fish-3d",
+    "sweve",
+    "synesthesia",
+    "tacticalassasin2",
+    "tactical-weapon-pack-2",
+    "tail-of-the-dragon",
+    "tank-trouble-2",
+    "tarunski-sunset",
+    "temple-run-2",
+    "tetris",
+    "thebattle",
+    "thechromaincident",
+    "the-final-earth",
+    "the-final-earth-2",
+    "theheist",
+    "the-impossible-quiz",
+    "the-impossible-quiz-2",
+    "the-little-giant",
+    "themazeofapegoblins",
+    "thereisnogame",
+    "there-is-no-game",
+    "thisisthisonlylevel",
+    "time-shooter-3",
+    "tiny-fishing",
+    "tiny-fragments",
+    "tiny-islands",
+    "topple-adventure",
+    "tostheturtle",
+    "tough-growth",
+    "towermaster",
+    "townscape",
+    "tunnelrush",
+    "tube-jumpers",
+    "tunnelrush",
+    "twitch-tetris",
+    "underrun",
+    "unfold-2",
+    "up-left-out",
+    "velooe",
+    "vex3",
+    "vex4",
+    "vex5",
+    "vex6",
+    "vex7",
+    "volleyrandom",
+    "waterworks",
+    "webretro",
+    "winter-falling-price",
+    "wipo",
+    "wolf3d",
+    "wordle",
+    "worldshardestgame",
+    "worldshardestgame2",
+    "x-trial-racing",
+    "xx142b2.exe",
+    "yoshifabrication",
+    "you-are-bezos",
+    "zig-zag",
+    "zombieapocalypse",
+    "Eaglercraft.html"
 ];
 
-const grid = document.getElementById("product-grid");
+    const movieList = [];
 
-// Render products
-products.forEach((p) => {
-  const card = document.createElement("div");
-  card.className = "card";
+    function imageFileNameFromId(id){
+      let clean=id.replace(/(\.html|\.exe|\.broken|\.old)$/i,'');
 
-  // Slideshow
-  const slideshow = document.createElement("div");
-  slideshow.className = "slideshow-container";
+      clean=clean.replace(/[^a-zA-Z0-9]/g,'');
+      if(!clean) clean='game';
+      return clean.toLowerCase()+IMAGE_EXT;
+    }
 
-  p.images.forEach((img,i) => {
-    const imageEl = document.createElement("img");
-    imageEl.src = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/${imageFolder}/${img}`;
-    if(i===0) imageEl.classList.add("active");
-    slideshow.appendChild(imageEl);
-  });
+    function prettyTitle(id){
+      let t=id.replace(/(\.html|\.exe|\.broken|\.old)$/i,'');
+      t=t.replace(/[\.\-\_]/g,' ');
+      t=t.replace(/([a-z])([0-9])/ig,'$1 $2').replace(/\s+/g,' ').trim();
+      t=t.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+      return t;
+    }
 
-  const leftArrow = document.createElement("div");
-  leftArrow.className = "arrow left";
-  leftArrow.innerHTML = "&#10094;";
-  const rightArrow = document.createElement("div");
-  rightArrow.className = "arrow right";
-  rightArrow.innerHTML = "&#10095;";
-  slideshow.appendChild(leftArrow);
-  slideshow.appendChild(rightArrow);
+    function gameURLFromId(id){
+      if(/\.html$/i.test(id)) return GAME_HOST+'/'+id;
+      return GAME_HOST+'/'+id+'.html';
+    }
 
-  let current = 0;
-  leftArrow.onclick = () => {
-    const imgs = slideshow.querySelectorAll("img");
-    imgs[current].classList.remove("active");
-    current = (current-1+imgs.length)%imgs.length;
-    imgs[current].classList.add("active");
-  };
-  rightArrow.onclick = () => {
-    const imgs = slideshow.querySelectorAll("img");
-    imgs[current].classList.remove("active");
-    current = (current+1)%imgs.length;
-    imgs[current].classList.add("active");
-  };
+    const grid=document.getElementById('gameGrid');
+    const gameMenu=document.getElementById('gameMenu');
+    const gameFrameWrap=document.getElementById('gameFrame');
+    const gameFrame=document.getElementById('gameIframe');
+    const closeBtn=document.getElementById('closeBtn');
+    const secretSpan=document.getElementById('secret-word');
+    const body=document.body;
 
-  card.appendChild(slideshow);
+    const tabs=document.querySelectorAll('.tab');
+    const panelTitle=document.getElementById('panelTitle');
+    const panelSubtitle=document.getElementById('panelSubtitle');
+    const gamesTabDiv=document.getElementById('gamesTab');
+    const moviesTabDiv=document.getElementById('moviesTab');
+    const extraTabDiv=document.getElementById('extraTab');
+    const movieListContainer=document.getElementById('movieListContainer');
 
-  const title = document.createElement("h3");
-  title.textContent = p.name;
-  card.appendChild(title);
+    function buildGrid(){
+      grid.innerHTML='';
+      for(const g of gameList){
+        const card=document.createElement('button');
+        card.className='game-card';
+        card.setAttribute('data-gameid',g);
 
-  const desc = document.createElement("p");
-  desc.textContent = p.desc;
-  card.appendChild(desc);
+        const thumb=document.createElement('div');
+        thumb.className='game-thumb';
 
-  const btn = document.createElement("a");
-  btn.href = formLink;
-  btn.target = "_blank";
-  btn.className = "order-btn";
-  btn.textContent = "Order Now";
-  card.appendChild(btn);
+        const img=document.createElement('img');
+        img.alt=prettyTitle(g)+' thumbnail';
+        img.loading='lazy';
+        img.src=IMAGE_FOLDER+imageFileNameFromId(g);
 
-  grid.appendChild(card);
-});
+        thumb.appendChild(img);
 
-// Secret Game Menu Logic
-let typed = "";
-const secret = "southadams";
-const gameMenu = document.getElementById("game-menu");
-const gameLinksDiv = document.getElementById("game-links");
+        const meta=document.createElement('div');
+        meta.className='game-meta';
 
-document.addEventListener("keydown", (e)=>{
-  typed += e.key.toLowerCase();
-  if(!secret.startsWith(typed)) typed = "";
-  if(typed === secret){
-    typed = "";
-    gameMenu.style.display = gameMenu.style.display === "block" ? "none" : "block";
-    loadGames();
-  }
-});
+        const title=document.createElement('div');
+        title.className='game-title';
+        title.textContent=prettyTitle(g);
 
-function loadGames(){
-  fetch(`https://api.github.com/repos/${githubUsername}/${repoName}/contents/${gamesFolder}`)
-  .then(res => res.json())
-  .then(files => {
-    gameLinksDiv.innerHTML = "";
-    files.forEach(file => {
-      let a = document.createElement("a");
+        meta.appendChild(title);
 
-      if (file.type === "file" && file.name.endsWith(".html")) {
-        // Normal .html file
-        a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}`;
-        a.textContent = file.name.replace(".html", "");
-      } else if (file.type === "dir") {
-        // Folder (will load its index.html automatically)
-        a.href = `https://${githubUsername}.github.io/${gamesFolder}/${file.name}/`;
-        a.textContent = file.name;
+        card.appendChild(thumb);
+        card.appendChild(meta);
+        card.addEventListener('click',()=>openGameInFrame(g));
+
+        grid.appendChild(card);
+      }
+    }
+
+    function buildMovieListUI(){
+      movieListContainer.innerHTML='';
+      if(movieList.length===0){
+        const empty=document.createElement('div');
+        empty.style.color='var(--muted)';
+        empty.textContent='No movies added.';
+        movieListContainer.appendChild(empty);
+        return;
       }
 
-      if (a.href) {
-        a.target = "_blank";
-        gameLinksDiv.appendChild(a);
+      const listWrap=document.createElement('div');
+      listWrap.style.display='grid';
+      listWrap.style.gridTemplateColumns='repeat(auto-fit,minmax(220px,1fr))';
+      listWrap.style.gap='12px';
+
+      movieList.forEach((m,idx)=>{
+        const card=document.createElement('div');
+        card.style.background='linear-gradient(180deg,var(--card),var(--card-2))';
+        card.style.padding='10px';
+        card.style.borderRadius='8px';
+        card.style.display='flex';
+        card.style.flexDirection='column';
+        card.style.gap='8px';
+        card.style.color='var(--white)';
+
+        const title=document.createElement('div');
+        title.style.fontWeight='700';
+        title.textContent=m.title||`Movie ${idx+1}`;
+
+        const url=document.createElement('div');
+        url.style.color='var(--muted)';
+        url.style.fontSize='13px';
+        url.textContent=m.url;
+
+        const openBtn=document.createElement('button');
+        openBtn.textContent='Play';
+        openBtn.style.marginTop='6px';
+        openBtn.style.background='transparent';
+        openBtn.style.border='1px solid rgba(255,255,255,0.2)';
+        openBtn.style.color='var(--white)';
+        openBtn.style.padding='6px 10px';
+        openBtn.style.borderRadius='6px';
+        openBtn.onclick=()=>openMovieInFrame(m);
+
+        card.appendChild(title);
+        card.appendChild(url);
+        card.appendChild(openBtn);
+        listWrap.appendChild(card);
+      });
+
+      movieListContainer.appendChild(listWrap);
+    }
+
+    function openGameInFrame(gameId){
+      const url=gameURLFromId(gameId);
+      gameMenu.style.display='none';
+      gameFrameWrap.style.display='block';
+      gameFrame.src=url;
+    }
+
+    function openMovieInFrame(movieObj){
+      const url=movieObj.url;
+      gameMenu.style.display='none';
+      gameFrameWrap.style.display='block';
+      gameFrame.src=url;
+    }
+
+    function closeGameFrame(){
+      gameFrame.src='';
+      gameFrameWrap.style.display='none';
+      gameMenu.style.display='block';
+    }
+
+    closeBtn.addEventListener('click',closeGameFrame);
+
+    window.addEventListener('keydown',ev=>{
+      if(ev.key==='Escape'&&gameFrameWrap.style.display==='block'){
+        closeGameFrame();
       }
     });
-  })
-  .catch(err => console.error(err));
-}
-</script>
+
+    secretSpan.addEventListener('click',()=>{
+      const code=prompt('Enter access code:');
+      if(code===null) return;
+      if(code.trim().toLowerCase()===SECRET_CODE.toLowerCase()){
+        document.getElementById('constitution').style.display='none';
+        body.classList.add('unlocked');
+        gameMenu.style.display='block';
+        buildGrid();
+        buildMovieListUI();
+        setActiveTab('games');
+      }else{
+        alert('Incorrect code.');
+      }
+    });
+
+    function setActiveTab(tabName){
+      tabs.forEach(t=>{
+        t.setAttribute('aria-selected',t.dataset.tab===tabName?'true':'false');
+      });
+
+      if(tabName==='games'){
+        panelTitle.textContent='Games';
+        panelSubtitle.textContent='Click a card to open it';
+        gamesTabDiv.style.display='';
+        moviesTabDiv.style.display='none';
+        extraTabDiv.style.display='none';
+      } else if(tabName==='movies'){
+        panelTitle.textContent='Movies';
+        panelSubtitle.textContent='Pick a movie to watch';
+        gamesTabDiv.style.display='none';
+        moviesTabDiv.style.display='';
+        extraTabDiv.style.display='none';
+      } else {
+        panelTitle.textContent='Extra';
+        panelSubtitle.textContent='Nothing here yet.';
+        gamesTabDiv.style.display='none';
+        moviesTabDiv.style.display='none';
+        extraTabDiv.style.display='';
+      }
+    }
+
+    tabs.forEach(t=>{
+      t.addEventListener('click',()=>setActiveTab(t.dataset.tab));
+    });
+
+  </script>
 </body>
 </html>
